@@ -1,0 +1,84 @@
+/* This is just an example CSS file; you're welcome to replace any/all of this. */
+
+
+/* element selectors - select all elements of this type */
+body{
+    background-color: skyblue;
+    font-family: "Helvetica";
+}
+
+/* grouping selectors - select multiple types at once */
+p,li,h1 {
+    color: darkred;
+}
+
+p, span, li, input {
+    font-size: 1.5em;
+}
+
+/* descendent selectors - select based on nested relationships (no matter how nested) */
+div li{
+    padding: 10px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+fieldset {
+    display: inline-block;
+    text-align: center;
+}
+
+#headerinfo {
+    border: 1px solid darkslateblue;
+    text-align: center;
+}
+
+.userinfo {
+    color: black;
+    font-size: 1.2em;
+    margin: 8px 0;
+    text-indent: 0;
+}
+
+.application {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.controls {
+    text-align: center;
+    margin: 25px auto;
+}
+
+.instruction {
+    color: black;
+    font-size: 1.3em;
+}
+
+#visualizer {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    height: 400px;
+    border: 1px solid #333;
+    margin: 15px auto 0;
+}
+
+#keyboard {
+    display: flex;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+#keyboard .whiteKey {
+    width: 60px;
+}
+
+#keyboard .blackKey {
+    width: 36px;
+}

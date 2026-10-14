@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Homework 2 - Extending the Synthesizer: Shaping Sounds Using LFOs and Envelopes</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript"
+            src="https://faculty.cc.gatech.edu/~keith/code/cs4590lib-1.1.0.js"
+            charset="utf-8"></script>
+
+    <script src="app.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+<div class="application">
+
+    <div>
+        <h1></h1>
+
+        <div id="headerinfo">
+            <p class="userinfo">
+                Name: Donovan Ligonde
+            </p>
+
+            <p class="userinfo">
+                Email: dligonde3@gatech.edu
+            </p>
+
+            <p class="userinfo">
+                GTID: 903879202
+            </p>
+        </div>
+
+        <p>
+            A three-octave synthesizer using the Web Audio API.
+        </p>
+    </div>
+
+    <hr>
+
+    <!-- Piano Keyboard -->
+    <div class="controls">
+        <h2>Piano Keyboard</h2>
+
+        <div id="keyboard" style="width: 100%; max-width: 900px;"></div>
+    </div>
+
+    <hr>
+
+    <!-- Waveform Type -->
+    <div class="controls">
+        <h2>Waveform Type</h2>
+
+        <form id="waveformForm">
+            <fieldset>
+                <label>
+                    <input type="radio"
+                           id="sine"
+                           name="waveform"
+                           value="sine"
+                           checked>
+                    Sine
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="square"
+                           name="waveform"
+                           value="square">
+                    Square
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="sawtooth"
+                           name="waveform"
+                           value="sawtooth">
+                    Sawtooth
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="triangle"
+                           name="waveform"
+                           value="triangle">
+                    Triangle
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="sample1"
+                           name="waveform"
+                           value="sample1">
+                    Sample 1
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="sample2"
+                           name="waveform"
+                           value="sample2">
+                    Sample 2
+                </label>
+            </fieldset>
+        </form>
+    </div>
+
+    <hr>
+
+    <!-- Filter -->
+    <div class="controls">
+        <h2>Filter Control</h2>
+
+        <form id="filterForm">
+            <fieldset>
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="allpass"
+                           checked>
+                    Allpass
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="lowpass">
+                    Lowpass
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="highpass">
+                    Highpass
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="bandpass">
+                    Bandpass
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="lowshelf">
+                    Lowshelf
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="highshelf">
+                    Highshelf
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="peaking">
+                    Peaking
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="filterType"
+                           value="notch">
+                    Notch
+                </label>
+            </fieldset>
+        </form>
+
+        <p>
+            <label for="filterFrequency">
+                Filter Frequency:
+                <span id="filterFrequencyValue">1000</span> Hz
+            </label>
+        </p>
+
+        <input type="range"
+               id="filterFrequency"
+               min="20"
+               max="20000"
+               value="1000"
+               step="1">
+    </div>
+
+    <hr>
+
+    <!-- Reverb -->
+    <div class="controls">
+        <h2>Reverb Control</h2>
+
+        <form id="reverbForm">
+            <fieldset>
+                <label>
+                    <input type="radio"
+                           name="reverb"
+                           value="off"
+                           checked>
+                    Off
+                </label>
+
+                <label>
+                    <input type="radio"
+                           name="reverb"
+                           value="on">
+                    On
+                </label>
+            </fieldset>
+        </form>
+
+        <p>
+            <label for="reverbDuration">
+                Duration:
+                <span id="reverbDurationValue">3</span> seconds
+            </label>
+        </p>
+
+        <input type="range"
+               id="reverbDuration"
+               min="1"
+               max="10"
+               value="3"
+               step="1">
+
+        <p>
+            <label for="reverbDecay">
+                Decay:
+                <span id="reverbDecayValue">3</span>
+            </label>
+        </p>
+
+        <input type="range"
+               id="reverbDecay"
+               min="1"
+               max="10"
+               value="3"
+               step="1">
+    </div>
+
+    <hr>
+
+    <!-- Vibrato -->
+    <div class="controls">
+        <h2>Vibrato Control</h2>
+
+        <p>
+            <label>
+                <input type="checkbox"
+                       id="vibratoEnabled">
+                Enable Vibrato
+            </label>
+        </p>
+
+        <p>
+            <label for="vibratoFrequency">
+                Vibrato Frequency:
+                <span id="vibratoFrequencyValue">10</span> Hz
+            </label>
+        </p>
+
+        <input type="range"
+               id="vibratoFrequency"
+               min="0"
+               max="50"
+               value="10"
+               step="1">
+
+        <p>
+            <label for="vibratoDepth">
+                Vibrato Depth:
+                <span id="vibratoDepthValue">100</span>
+            </label>
+        </p>
+
+        <input type="range"
+               id="vibratoDepth"
+               min="0"
+               max="200"
+               value="100"
+               step="1">
+    </div>
+
+    <hr>
+
+    <!-- Tremolo -->
+    <div class="controls">
+        <h2>Tremolo Control</h2>
+
+        <p>
+            <label>
+                <input type="checkbox"
+                       id="tremoloEnabled">
+                Enable Tremolo
+            </label>
+        </p>
+
+        <p>
+            <label for="tremoloFrequency">
+                Tremolo Frequency:
+                <span id="tremoloFrequencyValue">10</span> Hz
+            </label>
+        </p>
+
+        <input type="range"
+               id="tremoloFrequency"
+               min="0"
+               max="50"
+               value="10"
+               step="1">
+
+        <p>
+            <label for="tremoloDepth">
+                Tremolo Depth:
+                <span id="tremoloDepthValue">100</span>
+            </label>
+        </p>
+
+        <input type="range"
+               id="tremoloDepth"
+               min="0"
+               max="200"
+               value="100"
+               step="1">
+    </div>
+
+    <hr>
+
+    <!-- ADSR Envelope -->
+    <div class="controls">
+        <h2>ADSR Envelope Control</h2>
+
+        <p>
+            <label>
+                <input type="checkbox"
+                       id="envelopeEnabled">
+                Enable Envelope
+            </label>
+        </p>
+
+        <p>
+            <label for="envelopeDuration">
+                Envelope Duration:
+                <span id="envelopeDurationValue">1.0</span> seconds
+            </label>
+        </p>
+
+        <input type="range"
+               id="envelopeDuration"
+               min="0.2"
+               max="3.0"
+               value="1.0"
+               step="0.1">
+
+        <p>
+            Attack-Decay-Sustain-Release Envelope:
+        </p>
+
+        <canvas id="adsrCanvas"
+                width="700"
+                height="300">
+        </canvas>
+
+        <pre id="output">Move a control point...</pre>
+    </div>
+
+    <hr>
+
+    <!-- Master Gain -->
+    <div class="controls">
+        <h2>Gain Control</h2>
+
+        <p>
+            <label for="masterGain">
+                Master Gain:
+                <span id="masterGainValue">0.5</span>
+            </label>
+        </p>
+
+        <input type="range"
+               id="masterGain"
+               min="0"
+               max="1"
+               value="0.5"
+               step="0.01">
+    </div>
+
+    <hr>
+
+    <!-- Visualization -->
+    <div class="controls">
+        <h2>Visualization</h2>
+
+        <p>Select Visualization Type:</p>
+
+        <form id="visForm">
+            <fieldset>
+                <label>
+                    <input type="radio"
+                           id="time"
+                           name="vistype"
+                           value="time"
+                           checked>
+                    Time-Domain
+                </label>
+
+                <label>
+                    <input type="radio"
+                           id="frequency"
+                           name="vistype"
+                           value="frequency">
+                    Frequency-Domain
+                </label>
+            </fieldset>
+        </form>
+
+        <p>
+            <canvas id="visualizer"></canvas>
+        </p>
+    </div>
+
+    <hr>
+
+    <!-- TA Instructions -->
+    <div class="controls">
+        <h2>Instructions</h2>
+
+        <p>
+            Use the piano keyboard to play notes. Select a waveform,
+            adjust the filter and reverb controls, and use the gain
+            control to adjust the overall volume. The visualization
+            can display either time-domain or frequency-domain audio data.
+        </p>
+    </div>
+
+</div>
+</body>
+</html>
